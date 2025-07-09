@@ -18,6 +18,7 @@ public class ClubReportService {
     private final ClubRepository clubRepository;
     private final ClubReportRepository clubReportRepository;
     private final MemberRepository memberRepository;
+
     @Transactional
     public void reportClub(Long reporterId, ReportReq reportClubReq) {
         // 신고자 찾기

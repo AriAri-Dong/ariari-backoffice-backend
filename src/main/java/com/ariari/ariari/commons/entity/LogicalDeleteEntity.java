@@ -5,6 +5,7 @@ import lombok.Getter;
 
 import java.time.LocalDateTime;
 
+
 @MappedSuperclass
 @Getter
 public class LogicalDeleteEntity extends BaseEntity {

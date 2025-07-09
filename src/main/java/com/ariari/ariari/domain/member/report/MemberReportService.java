@@ -1,6 +1,7 @@
 package com.ariari.ariari.domain.member.report;
 
 import com.ariari.ariari.commons.entity.report.dto.ReportReq;
+import com.ariari.ariari.commons.entity.report.enums.ReportStatusType;
 import com.ariari.ariari.commons.exception.exceptions.NotFoundEntityException;
 import com.ariari.ariari.commons.exception.exceptions.ReportExistsException;
 import com.ariari.ariari.domain.member.Member;
@@ -33,7 +34,8 @@ public class MemberReportService {
                .reporter(reporterMember)
                .reportedMember(reportedMember)
                .reportType(reportMemberReq.getReportType())
-               .body(reportMemberReq.getBody())
+                .locationUrl(null)
+                .body(reportMemberReq.getBody())
                .build();
 
        // 회원 신고 저장

@@ -23,7 +23,7 @@ public class MemberAlarmController {
     @Operation(summary = "회원 알림 조회")
     @GetMapping("/alarm")
     public MemberAlarmListRes getAlarms(@AuthenticationPrincipal CustomUserDetails userDetails
-    , Pageable pageable){
+            , Pageable pageable){
         Long memberId = CustomUserDetails.getMemberId(userDetails, false);
         return memberAlarmService.getAlarms(memberId, pageable);
     }

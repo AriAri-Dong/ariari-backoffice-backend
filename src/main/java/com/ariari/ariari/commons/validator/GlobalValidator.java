@@ -2,12 +2,10 @@ package com.ariari.ariari.commons.validator;
 
 import com.ariari.ariari.commons.exception.exceptions.MaxSizeExceededException;
 import com.ariari.ariari.commons.exception.exceptions.NoSchoolAuthException;
-import com.ariari.ariari.domain.club.Club;
 import com.ariari.ariari.domain.club.clubmember.ClubMember;
 import com.ariari.ariari.domain.club.clubmember.enums.ClubMemberRoleType;
+import com.ariari.ariari.domain.club.exceptions.NoClubManagerException;
 import com.ariari.ariari.domain.member.Member;
-import com.ariari.ariari.domain.recruitment.Recruitment;
-import com.ariari.ariari.domain.school.School;
 
 import java.util.List;
 
@@ -28,5 +26,12 @@ public class GlobalValidator {
             throw new MaxSizeExceededException();
         }
     }
+
+    public static void isClubManagerOrHigher(ClubMember reqClubMember) {
+        if (reqClubMember.getClubMemberRoleType().equals(ClubMemberRoleType.GENERAL)) {
+            throw new NoClubManagerException();
+        }
+    }
+
 
 }

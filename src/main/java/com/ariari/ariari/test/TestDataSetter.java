@@ -1,17 +1,27 @@
 package com.ariari.ariari.test;
 
+import com.ariari.ariari.commons.enums.ReportType;
 import com.ariari.ariari.domain.club.Club;
+import com.ariari.ariari.domain.club.activity.ClubActivity;
+import com.ariari.ariari.domain.club.activity.ClubActivityRepository;
+import com.ariari.ariari.domain.club.activity.comment.ClubActivityComment;
+import com.ariari.ariari.domain.club.activity.comment.ClubActivityCommentRepository;
+import com.ariari.ariari.domain.club.activity.comment.report.ClubActivityCommentReport;
+import com.ariari.ariari.domain.club.activity.comment.report.ClubActivityCommentReportRepository;
+import com.ariari.ariari.domain.club.activity.enums.AccessType;
+import com.ariari.ariari.domain.club.activity.report.ClubActivityReport;
+import com.ariari.ariari.domain.club.activity.report.ClubActivityReportRepository;
 import com.ariari.ariari.domain.club.alarm.ClubAlarm;
 import com.ariari.ariari.domain.club.alarm.ClubAlarmRepository;
-import com.ariari.ariari.domain.club.club.ClubRepository;
 import com.ariari.ariari.domain.club.bookmark.ClubBookmark;
 import com.ariari.ariari.domain.club.bookmark.ClubBookmarkRepository;
+import com.ariari.ariari.domain.club.club.ClubRepository;
 import com.ariari.ariari.domain.club.club.enums.ClubCategoryType;
+import com.ariari.ariari.domain.club.club.enums.ClubRegionType;
+import com.ariari.ariari.domain.club.club.enums.ParticipantType;
 import com.ariari.ariari.domain.club.clubmember.ClubMember;
 import com.ariari.ariari.domain.club.clubmember.ClubMemberRepository;
 import com.ariari.ariari.domain.club.clubmember.enums.ClubMemberRoleType;
-import com.ariari.ariari.domain.club.club.enums.ClubRegionType;
-import com.ariari.ariari.domain.club.club.enums.ParticipantType;
 import com.ariari.ariari.domain.club.financial.FinancialRecord;
 import com.ariari.ariari.domain.club.financial.FinancialRecordRepository;
 import com.ariari.ariari.domain.club.notice.ClubNotice;
@@ -35,25 +45,31 @@ import com.ariari.ariari.domain.member.alarm.MemberAlarm;
 import com.ariari.ariari.domain.member.alarm.MemberAlarmRepository;
 import com.ariari.ariari.domain.member.member.MemberRepository;
 import com.ariari.ariari.domain.recruitment.Recruitment;
-import com.ariari.ariari.domain.recruitment.apply.temp.ApplyTemp;
-import com.ariari.ariari.domain.recruitment.apply.temp.ApplyTempRepository;
-import com.ariari.ariari.domain.recruitment.apply.temp.answer.ApplyAnswerTemp;
-import com.ariari.ariari.domain.recruitment.recruitment.RecruitmentRepository;
 import com.ariari.ariari.domain.recruitment.apply.Apply;
 import com.ariari.ariari.domain.recruitment.apply.ApplyRepository;
 import com.ariari.ariari.domain.recruitment.apply.answer.ApplyAnswer;
+import com.ariari.ariari.domain.recruitment.apply.report.ApplyReport;
+import com.ariari.ariari.domain.recruitment.apply.report.ApplyReportRepository;
+import com.ariari.ariari.domain.recruitment.apply.temp.ApplyTemp;
+import com.ariari.ariari.domain.recruitment.apply.temp.ApplyTempRepository;
+import com.ariari.ariari.domain.recruitment.apply.temp.answer.ApplyAnswerTemp;
 import com.ariari.ariari.domain.recruitment.applyform.ApplyForm;
 import com.ariari.ariari.domain.recruitment.applyform.ApplyFormRepository;
 import com.ariari.ariari.domain.recruitment.applyform.applyquestion.ApplyQuestion;
 import com.ariari.ariari.domain.recruitment.bookmark.RecruitmentBookmark;
 import com.ariari.ariari.domain.recruitment.bookmark.RecruitmentBookmarkRepository;
-import com.ariari.ariari.domain.recruitment.recruitment.enums.ProcedureType;
 import com.ariari.ariari.domain.recruitment.note.RecruitmentNote;
+import com.ariari.ariari.domain.recruitment.recruitment.RecruitmentRepository;
+import com.ariari.ariari.domain.recruitment.recruitment.enums.ProcedureType;
+import com.ariari.ariari.domain.recruitment.report.RecruitmentReport;
+import com.ariari.ariari.domain.recruitment.report.RecruitmentReportRepository;
 import com.ariari.ariari.domain.school.School;
 import com.ariari.ariari.domain.school.school.SchoolRepository;
-import jakarta.persistence.*;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springdoc.core.models.GroupedOpenApi;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -67,7 +83,11 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 @Transactional
-public class    TestDataSetter {
+public class TestDataSetter {
+
+    private final GroupedOpenApi clubActivity;
+    @Value("${spring.profiles.active}")
+    private String profiles;
 
     private final MemberRepository memberRepository;
     private final SchoolRepository schoolRepository;
@@ -79,6 +99,8 @@ public class    TestDataSetter {
     private final RecruitmentBookmarkRepository recruitmentBookmarkRepository;
     private final ApplyRepository applyRepository;
     private final FinancialRecordRepository financialRecordRepository;
+    private final ClubActivityRepository clubActivityRepository;
+    private final ClubActivityCommentRepository clubActivityCommentRepository;
 
     private final EntityManager em;
     private final ClubReviewRepository clubReviewRepository;
@@ -90,9 +112,20 @@ public class    TestDataSetter {
     private final MemberAlarmRepository memberAlarmRepository;
     private final ClubNoticeRepository clubNoticeRepository;
     private final ApplyTempRepository applyTempRepository;
+    private final ClubActivityCommentReportRepository clubActivityCommentReportRepository;
+    private final ClubActivityReportRepository clubActivityReportRepository;
+    private final RecruitmentReportRepository recruitmentReportRepository;
+    private final ApplyReportRepository applyReportRepository;
 
     @EventListener(ApplicationReadyEvent.class)
     public void initTestData() {
+        if(memberRepository.count() > 0) {
+            return;
+        }
+        if (profiles.equals("prod")){
+            return;
+        }
+
         // school
         School school1 = new School("세종대학교2", "sejong.ac.kr");
         School school2 = new School("두종대학교3", "dujong.ac.kr");
@@ -445,10 +478,67 @@ public class    TestDataSetter {
         clubAlarmRepository.saveAll(List.of(clubAlarm1, clubAlarm2, clubAlarm3, clubAlarm4, clubAlarm5));
 
 
-        ClubNotice clubNotice1 = new ClubNotice("Test 제목1", "Test 내용1", false, c1, m3);
-        ClubNotice clubNotice2 = new ClubNotice("Test 제목2", "Test 내용2", false, c1, m3);
+        ClubActivity clubActivity1 = new ClubActivity(c1,m2, AccessType.CLUB_MEMBER, "test");
+        ClubActivity clubActivity2 = new ClubActivity(c1,m2, AccessType.CLUB_MEMBER, "test");
+        ClubActivity clubActivity3 = new ClubActivity(c2,m2, AccessType.CLUB_MEMBER, "test");
+        ClubActivity clubActivity4 = new ClubActivity(c2,m2, AccessType.CLUB_MEMBER, "test");
+        clubActivityRepository.saveAll(List.of(clubActivity1, clubActivity2, clubActivity3, clubActivity4));
+
+        ClubActivityComment clubActivityComment1 = new ClubActivityComment("test", m2, clubActivity1);
+        ClubActivityComment clubActivityComment2 = new ClubActivityComment("test", m2, clubActivity2);
+        ClubActivityComment clubActivityComment3 = new ClubActivityComment("test", m2, clubActivity2);
+        ClubActivityComment clubActivityComment4 = new ClubActivityComment("test", m2, clubActivity1, clubActivityComment1);
+        ClubActivityComment clubActivityComment5 = new ClubActivityComment("test", m2, clubActivity1);
+        ClubActivityComment clubActivityComment6 = new ClubActivityComment("test", m2, clubActivity3, clubActivityComment5);
+        ClubActivityComment clubActivityComment7 = new ClubActivityComment("test", m2, clubActivity4, clubActivityComment6);
+        ClubActivityComment clubActivityComment8 = new ClubActivityComment("test", m2, clubActivity4);
+        clubActivityCommentRepository.saveAll(List.of(clubActivityComment1, clubActivityComment2, clubActivityComment3, clubActivityComment4,
+                clubActivityComment5, clubActivityComment6, clubActivityComment7, clubActivityComment8));
+
+
+
+        ClubNotice clubNotice1 = new ClubNotice("Test 제목1", "Test 내용1", false, c1, m2);
+        ClubNotice clubNotice2 = new ClubNotice("Test 제목2", "Test 내용2", false, c1, m2);
         clubNoticeRepository.saveAll(List.of(clubNotice1, clubNotice2));
 
+
+        ClubActivityCommentReport report1 = ClubActivityCommentReport.builder()
+                .reporter(m1)
+                .reportType(ReportType.ETC)
+                .reportedClubActivityComment(clubActivityComment1)
+                .body("test")
+                .locationUrl("/test")
+                .build();
+
+
+        ClubActivityReport report2 = ClubActivityReport.builder()
+                .reporter(m1)
+                .reportType(ReportType.ETC)
+                .reportedClubActivity(clubActivity1)
+                .body("test")
+                .locationUrl("/test")
+                .build();
+
+        RecruitmentReport report3 = RecruitmentReport.builder()
+                .reporter(m1)
+                .reportType(ReportType.ETC)
+                .reportedRecruitment(r1)
+                .body("test")
+                .locationUrl("/test")
+                .build();
+
+        ApplyReport report4 = ApplyReport.builder()
+                .reporter(m1)
+                .reportType(ReportType.ETC)
+                .reportedApply(a1)
+                .body("test")
+                .locationUrl("/test")
+                .build();
+
+        clubActivityCommentReportRepository.save(report1);
+        clubActivityReportRepository.save(report2);
+        recruitmentReportRepository.save(report3);
+        applyReportRepository.save(report4);
 
 
 
