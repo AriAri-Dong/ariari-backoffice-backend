@@ -1,6 +1,7 @@
 package com.ariari.ariari.commons.entity.report;
 
 import com.ariari.ariari.commons.entity.LogicalDeleteEntity;
+import com.ariari.ariari.commons.entity.report.enums.LocationType;
 import com.ariari.ariari.commons.entity.report.enums.ReportStatusType;
 import com.ariari.ariari.commons.enums.ReportType;
 import com.ariari.ariari.commons.exception.exceptions.InvalidReportException;
@@ -43,6 +44,9 @@ public abstract class Report extends LogicalDeleteEntity {
     private LocalDateTime resolvedDate;
 
     @Enumerated(EnumType.STRING)
+    private LocationType locationType;
+
+    @Enumerated(EnumType.STRING)
     private ReportStatusType reportStatusType = ReportStatusType.PENDING;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -50,8 +54,7 @@ public abstract class Report extends LogicalDeleteEntity {
     private Member reporter;
 
 
-
-    protected Report(ReportType reportType, String body, Member reporter, String locationUrl) {
+    protected Report(ReportType reportType, String body, Member reporter, String locationUrl, LocationType  locationType) {
         if (reporter == null || reportType == null){
             throw new InvalidReportException();
         }
@@ -59,6 +62,7 @@ public abstract class Report extends LogicalDeleteEntity {
         this.body = body;
         this.reporter = reporter;
         this.locationUrl = locationUrl;
+        this.locationType = locationType;
     }
 
     public void resolve(String resolveBody, LocalDateTime resolvedDate) {

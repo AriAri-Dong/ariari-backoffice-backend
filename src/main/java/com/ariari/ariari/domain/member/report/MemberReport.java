@@ -1,6 +1,7 @@
 package com.ariari.ariari.domain.member.report;
 
 import com.ariari.ariari.commons.entity.report.Report;
+import com.ariari.ariari.commons.entity.report.enums.LocationType;
 import com.ariari.ariari.commons.enums.ReportType;
 import com.ariari.ariari.domain.member.Member;
 import jakarta.persistence.Entity;
@@ -26,8 +27,8 @@ public class MemberReport extends Report {
 
 
     @Builder
-    public MemberReport(ReportType reportType, String body, Member reporter, Member reportedMember, String locationUrl){
-        super(reportType, body, reporter, locationUrl);
+    public MemberReport(ReportType reportType, String body, Member reporter, Member reportedMember, String locationUrl, LocationType locationType){
+        super(reportType, body, reporter, locationUrl, locationType);
         this.reportedMember = reportedMember;
     }
 

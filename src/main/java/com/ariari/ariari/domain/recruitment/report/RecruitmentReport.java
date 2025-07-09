@@ -1,6 +1,7 @@
 package com.ariari.ariari.domain.recruitment.report;
 
 import com.ariari.ariari.commons.entity.report.Report;
+import com.ariari.ariari.commons.entity.report.enums.LocationType;
 import com.ariari.ariari.commons.enums.ReportType;
 import com.ariari.ariari.domain.member.Member;
 import com.ariari.ariari.domain.recruitment.Recruitment;
@@ -28,8 +29,8 @@ public class RecruitmentReport extends Report {
     private Recruitment reportedRecruitment;
 
     @Builder
-    public RecruitmentReport(ReportType reportType, String body, Member reporter, Recruitment reportedRecruitment, String locationUrl){
-        super(reportType, body, reporter, locationUrl);
+    public RecruitmentReport(ReportType reportType, String body, Member reporter, Recruitment reportedRecruitment, String locationUrl, LocationType locationType){
+        super(reportType, body, reporter, locationUrl, locationType);
         this.reportedRecruitment = reportedRecruitment;
     }
 

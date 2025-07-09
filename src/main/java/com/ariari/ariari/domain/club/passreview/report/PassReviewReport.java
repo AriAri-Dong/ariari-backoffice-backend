@@ -1,6 +1,7 @@
 package com.ariari.ariari.domain.club.passreview.report;
 
 import com.ariari.ariari.commons.entity.report.Report;
+import com.ariari.ariari.commons.entity.report.enums.LocationType;
 import com.ariari.ariari.commons.enums.ReportType;
 import com.ariari.ariari.domain.club.passreview.PassReview;
 import com.ariari.ariari.domain.member.Member;
@@ -29,8 +30,8 @@ public class PassReviewReport extends Report {
     private PassReview reportedPassReview;
 
     @Builder
-    public PassReviewReport(ReportType reportType, String body, Member reporter, PassReview reportedPassReview, String locationUrl){
-        super(reportType, body ,reporter, locationUrl);
+    public PassReviewReport(ReportType reportType, String body, Member reporter, PassReview reportedPassReview, String locationUrl, LocationType locationType){
+        super(reportType, body ,reporter, locationUrl, locationType);
         this.reportedPassReview = reportedPassReview;
     }
 

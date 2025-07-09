@@ -2,6 +2,7 @@ package com.ariari.ariari.commons.entity.report;
 
 import com.ariari.ariari.commons.entity.report.dto.req.DeleteReportReq;
 import com.ariari.ariari.commons.entity.report.dto.req.ResolveSaveReq;
+import com.ariari.ariari.commons.entity.report.dto.req.SearchReq;
 import com.ariari.ariari.commons.entity.report.dto.res.PendingReportListRes;
 import com.ariari.ariari.commons.entity.report.dto.res.ResolvedReportListRes;
 import com.ariari.ariari.commons.entity.report.enums.ReportStatusType;
@@ -15,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
@@ -44,6 +46,15 @@ public class ReportService {
         return ResolvedReportListRes.fromPage(reportPage);
     }
 
+    @Transactional(readOnly = true)
+    public ResolvedReportListRes searchReports(SearchReq searchReq, Long memberId, Pageable pageable) {
+        Member reqMember = getMemberOrThrow(memberId);
+        //검증 로직 추가해야함
+        Page<Report> reportPage = reportRepository.searchReports(searchReq, pageable);
+
+        return ResolvedReportListRes.fromPage(reportPage);
+    }
+
     @Transactional
     public void saveResolvedReport(ResolveSaveReq resolveSaveReq, Long memberId) {
         Member reqMember = getMemberOrThrow(memberId);
@@ -63,7 +74,10 @@ public class ReportService {
         memberAlarmManger.sendReportDeleteNotification(report.getReporter(), deleteReportReq.getDeleteBody());
     }
 
+
     private Member getMemberOrThrow(Long memberId) {
         return memberRepository.findById(memberId).orElseThrow(NotFoundEntityException::new);
     }
+
+
 }

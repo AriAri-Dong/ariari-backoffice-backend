@@ -1,6 +1,7 @@
 package com.ariari.ariari.domain.club.activity.report;
 
 import com.ariari.ariari.commons.entity.report.Report;
+import com.ariari.ariari.commons.entity.report.enums.LocationType;
 import com.ariari.ariari.commons.enums.ReportType;
 import com.ariari.ariari.domain.club.activity.ClubActivity;
 import com.ariari.ariari.domain.member.Member;
@@ -27,8 +28,8 @@ public class ClubActivityReport extends Report {
     private ClubActivity reportedClubActivity;
 
     @Builder
-    public ClubActivityReport(ReportType reportType , String body, Member reporter, ClubActivity reportedClubActivity, String locationUrl) {
-        super(reportType, body, reporter, locationUrl);
+    public ClubActivityReport(ReportType reportType , String body, Member reporter, ClubActivity reportedClubActivity, String locationUrl, LocationType locationType) {
+        super(reportType, body, reporter, locationUrl, locationType);
         this.reportedClubActivity = reportedClubActivity;
     }
 

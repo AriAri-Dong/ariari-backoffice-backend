@@ -1,5 +1,6 @@
 package com.ariari.ariari.test;
 
+import com.ariari.ariari.commons.entity.report.enums.LocationType;
 import com.ariari.ariari.commons.enums.ReportType;
 import com.ariari.ariari.domain.club.Club;
 import com.ariari.ariari.domain.club.activity.ClubActivity;
@@ -508,6 +509,7 @@ public class TestDataSetter {
                 .reportedClubActivityComment(clubActivityComment1)
                 .body("test")
                 .locationUrl("/test")
+                .locationType(LocationType.COMMENT)
                 .build();
 
 
@@ -517,6 +519,7 @@ public class TestDataSetter {
                 .reportedClubActivity(clubActivity1)
                 .body("test")
                 .locationUrl("/test")
+                .locationType(LocationType.ACTIVITY)
                 .build();
 
         RecruitmentReport report3 = RecruitmentReport.builder()
@@ -525,6 +528,7 @@ public class TestDataSetter {
                 .reportedRecruitment(r1)
                 .body("test")
                 .locationUrl("/test")
+                .locationType(LocationType.CLUB_RECRUIT)
                 .build();
 
         ApplyReport report4 = ApplyReport.builder()
@@ -533,6 +537,7 @@ public class TestDataSetter {
                 .reportedApply(a1)
                 .body("test")
                 .locationUrl("/test")
+                .locationType(LocationType.ACTIVITY_REVIEW)
                 .build();
 
         clubActivityCommentReportRepository.save(report1);
